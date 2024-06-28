@@ -1,0 +1,11 @@
+* {
+    background-color: rgb(46, 43, 43);
+    color: aliceblue;
+
+  }
+  
+.App{
+    margin-left: 4%;
+    margin-right: 4%;
+    box-sizing: border-box;
+}
