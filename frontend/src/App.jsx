@@ -1,9 +1,9 @@
 import React from "react";
-import './main.css'
+import Notes from "./components/Notes.jsx";
 const App = () => {
   return (
     <div className="App">
-      App
+      <Notes />
     </div>
   );
 };
