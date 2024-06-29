@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useAddTodoMutation, useRemoveTodoMutation, useEditTodoMutation } from "../slices/apiSlice";
-import axios from "axios";
+import { useDispatch } from "react-redux";
+import { useAddTodoMutation, useRemoveTodoMutation, useEditTodoMutation, useGetTodosQuery } from "../slices/apiSlice";
+import { addTodo, editTodo, removeTodo } from "../slices/todoSlice";
 import AddTodo from "../components/todo/AddTodo";
 import RemoveTodo from "../components/todo/RemoveTodo";
 import EditTodo from "../components/todo/EditTodo";
@@ -8,34 +9,35 @@ import Spinner from "../assets/Spinner";
 import EditModel from "../components/todo/EditModel";
 
 const Todos = () => {
-  const [todos, setTodos] = useState([]);
-  const [addTodo] = useAddTodoMutation();
-  const [removeTodo] = useRemoveTodoMutation();
-  const [editTodo] = useEditTodoMutation();
-  const [error, setError] = useState("");
-  const [isLoading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { data, error, isLoading, refetch } = useGetTodosQuery();
+  const [addTodoMutation] = useAddTodoMutation();
+  const [removeTodoMutation] = useRemoveTodoMutation();
+  const [editTodoMutation] = useEditTodoMutation();
   const [editModel, setEditModel] = useState({ show: false, id: "" });
-
-  const fetchTodos = async () => {
-    try {
-      const res = await axios.get("/api/todos");
-      setTodos(res.data.todos);
-      setLoading(false);
-    } catch (error) {
-      console.error(`Error in fetching todos: ${error}`);
-      setError(error.message);
-      setLoading(false);
-    }
-  };
+  const [todos,setTodos] = useState([])
 
   useEffect(() => {
-    fetchTodos();
-  }, []);
+    const fetchData = async () => {
+      try {
+        await refetch();
+        if( data!==undefined){
+          setTodos(data.todos)
+          console.log(data.todos);
+        }
+      } catch (error) {
+        console.error("Error fetching todos:", error);
+      }
+    };
+
+    fetchData();
+  }, [refetch,data]);
 
   const handleAddTodo = async (text) => {
     try {
-      const newTodo = await addTodo(text).unwrap();
-      setTodos([...todos, newTodo.todo]);
+      const newTodo = await addTodoMutation(text).unwrap();
+      dispatch(addTodo(newTodo.todo));
+      await refetch();
     } catch (err) {
       console.error("Failed to add todo:", err);
     }
@@ -43,8 +45,9 @@ const Todos = () => {
 
   const handleRemoveTodo = async (id) => {
     try {
-      await removeTodo(id);
-      setTodos(todos.filter((todo) => todo.id !== id));
+      await removeTodoMutation(id);
+      dispatch(removeTodo({ id }));      await refetch();
+      await refetch();
     } catch (err) {
       console.error("Failed to remove todo:", err);
     }
@@ -52,11 +55,11 @@ const Todos = () => {
 
   const handleEditTodo = async ({ id, text }) => {
     try {
-      await editTodo({ id, text });
-      const updatedTodos = todos.map((todo) => (todo.id === id ? { ...todo, text } : todo));
-      setTodos(updatedTodos);
-    } catch (error) {
-        throw new Error(error)
+      await editTodoMutation({ id, text });
+      dispatch(editTodo({ id, text }));
+      await refetch();
+    } catch (err) {
+      console.error("Failed to edit todo:", err);
     }
   };
 
@@ -66,21 +69,17 @@ const Todos = () => {
         <h2 className="text-2xl font-bold">Todo List</h2>
       </div>
       <AddTodo onAddTodo={handleAddTodo} />
+      {isLoading&&<Spinner />}
+      {error&&<p className="text-red-500">{error.message}</p>}
       {editModel.show && <EditModel id={editModel.id} todos={todos} editTodo={handleEditTodo} setEditModel={setEditModel} />}
       <div className="mt-8">
-        {isLoading ? (
-          <Spinner />
-        ) : error ? (
-          <p className="text-red-500">{error}</p>
-        ) : todos.length !== 0 ? (
+        {todos.length > 0 ? (
           <ul className="divide-y divide-gray-200">
             {todos.map((todo, i) => (
               <li key={todo.id || i} className="flex items-center justify-between py-4">
-                <span className="text-gray-800"> {todo.text}</span>
+                <span className="text-gray-800">{todo.text}</span>
                 <div className="flex space-x-4">
-                  <EditTodo
-                    onEditTodo={() => setEditModel({ show: true, id: todo.id })}
-                  />
+                  <EditTodo onEditTodo={() => setEditModel({ show: true, id: todo.id })} />
                   <RemoveTodo id={todo.id} onRemoveTodo={handleRemoveTodo} />
                 </div>
               </li>

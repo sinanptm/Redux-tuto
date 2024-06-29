@@ -10,7 +10,7 @@ const Header = () => {
   }
 
   return (
-    <header className="bg-sky-800 text-white py-4">
+    <header className="bg-cyan-600 text-white py-4">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           <div className="text-2xl font-bold">Note Taker</div>

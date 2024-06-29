@@ -3,6 +3,9 @@ import React from "react";
 const NOTES = () => {
   return (
     <div className="py-10">
+      <div className="flex justify-center">
+        <h2 className="text-2xl font-bold">Redux Notes</h2>
+      </div>
       <div className="mt-5 mx-auto max-w-4xl text-white">
         <h1 className="text-3xl font-bold mb-8 text-center">Redux Concepts</h1>
         <div className="mb-4">
@@ -33,6 +36,37 @@ const NOTES = () => {
               action as arguments, and return a new state. They specify how the
               application's state changes in response to actions sent to the
               store.
+            </p>
+          </div>
+        </div>
+        <div className="mb-4">
+          <div className="bg-gray-600 text-white p-6 rounded-lg shadow-md">
+            <h2 className="text-2xl font-bold mb-2">Action Middleware</h2>
+            <p>
+              Action middleware in Redux intercepts actions before they reach the reducers,
+              allowing for asynchronous operations, logging, or other side effects. 
+              It enhances Redux's capabilities beyond synchronous state updates.
+            </p>
+          </div>
+        </div>
+        <div className="mb-4">
+          <div className="bg-gray-600 text-white p-6 rounded-lg shadow-md">
+            <h2 className="text-2xl font-bold mb-2">Reducers</h2>
+            <p>
+              Reducers are pure functions that take the current state and an
+              action as arguments, and return a new state. They specify how the
+              application's state changes in response to actions sent to the
+              store.
+            </p>
+          </div>
+        </div>
+        <div className="mb-4">
+          <div className="bg-gray-600 text-white p-6 rounded-lg shadow-md">
+            <h2 className="text-2xl font-bold mb-2">subscribe()</h2>
+            <p>
+              The <code>subscribe()</code> method in Redux allows components to listen 
+              to state changes in the store. It triggers whenever an action modifies the state,
+              enabling components to update their UI in response to these changes.
             </p>
           </div>
         </div>
