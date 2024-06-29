@@ -1,19 +1,15 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addTodo } from "../Slices/todoSlice";
+import React, { useState } from 'react';
 
-const AddTodo = () => {
-  const [todo, setTodo] = useState("");
-  const dispatch = useDispatch();
+const AddTodo = ({ onAddTodo }) => {
+    const [text, setText] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (todo.trim()) { 
-      dispatch(addTodo(todo));
-      setTodo("");
-    }
-  };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (text.trim()) {
+            onAddTodo(text);
+            setText('');
+        }
+    };
 
   return (
     <form onSubmit={handleSubmit} className="flex items-center justify-center mt-4 mb-8">
@@ -21,8 +17,8 @@ const AddTodo = () => {
         type="text"
         className="rounded-l-lg border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-gray-200 py-2 px-4 leading-tight focus:outline-none"
         placeholder="Add a new todo..."
-        value={todo}
-        onChange={(e) => setTodo(e.target.value)}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
       />
       <button
         type="submit"

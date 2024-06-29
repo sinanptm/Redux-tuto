@@ -1,10 +1,10 @@
 import React from "react";
-import Todos from "./components/Todos";
+import { Outlet } from "react-router-dom";
 
 const App = () => {
   return (
     <div className="App">
-      <Todos />
+      <Outlet />
     </div>
   );
 };

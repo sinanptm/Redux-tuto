@@ -2,7 +2,13 @@ import asyncHandler from 'express-async-handler';
 import Todo from '../models/todoModel.js'
 
 const getTodos = asyncHandler(async (req, res) => {
-  const todos = await Todo.find();
+  let todos = await Todo.find();
+  todos = todos.map(todo=>{
+    return {
+      id:todo._id,
+      text:todo.text,
+    }
+  })
   res.status(200).json({ todos });
 });
 
@@ -25,7 +31,7 @@ const editTodo = asyncHandler(async (req, res) => {
 });
 
 const deleteTodo = asyncHandler(async (req, res) => {
-  const todo = await Todo.findById(req.params.id);
+  const todo = await Todo.findOne({_id:req.params.id})
   if (!todo) {
     res.status(404);
     throw new Error('Todo not found');
