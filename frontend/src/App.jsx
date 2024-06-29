@@ -1,9 +1,10 @@
 import React from "react";
-import Notes from "./components/Notes.jsx";
+import Todos from "./components/Todos";
+
 const App = () => {
   return (
     <div className="App">
-      <Notes />
+      <Todos />
     </div>
   );
 };
