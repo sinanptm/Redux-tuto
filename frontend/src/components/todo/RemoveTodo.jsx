@@ -1,6 +1,6 @@
 import React from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
-import Button from "../assets/Button";
+import Button from "../../assets/Button";
 
 const RemoveTodo = ({ id, onRemoveTodo }) => {
   const handleRemove = () => {
