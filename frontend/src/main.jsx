@@ -1,28 +1,33 @@
-import React from "react";
+import React, { lazy } from "react";
 import { Provider } from "react-redux";
 import ReactDOM from "react-dom/client";
 import { store } from "./app/store.js";
 import App from "./App.jsx";
 import './index.css'
-import Todos from "./components/Todos";
-import Notes from "./components/Notes";
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
+import { LazyMotion, domAnimation} from "framer-motion";
+import AnimatedSuspense from "./assets/AnimatedSuspense.jsx";
+
+const Todos = lazy(() => import("./components/Todos"));
+const Notes = lazy(() => import("./components/Notes"));
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
-      <Route path="/notes" element={<Notes/>}/>
-      <Route path="/todo" element={<Todos/>}/>
-      <Route path="/" element={<Todos/>}/>
+      <Route path="/notes" element={<AnimatedSuspense children={<Notes/>} />}/>
+      <Route path="/todo" element={<AnimatedSuspense children={<Todos/>} />}/>
+      <Route path="/" element={<AnimatedSuspense children={<Todos/>} />}/>
     </Route>
   )
-)
-
+);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <LazyMotion features={domAnimation}>
+        <RouterProvider router={router} />
+      </LazyMotion>
     </Provider>
   </React.StrictMode>
 );
