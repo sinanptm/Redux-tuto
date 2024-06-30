@@ -1,13 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 
-const fontFamily = {
-  'sans': ['ui-sans-serif', 'system-ui'],
-  'serif': ['ui-serif', 'Georgia'],
-  'mono': ['ui-monospace', 'SFMono-Regular'],
-  'display': ['Oswald'],
-  'body': ['"Open Sans"'],
-};
-
 const colors = {
   black: {
     DEFAULT: '#000000', // Deep black
@@ -57,7 +49,6 @@ export default {
   theme: {
     extend: {
       colors,
-      fontFamily,
     },
   },
   plugins: [],
