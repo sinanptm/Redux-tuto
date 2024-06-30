@@ -10,13 +10,13 @@ const colors = {
   blue: 'bg-blue-500 hover:bg-blue-600 text-white', // Added blue color for Save button
 };
 
-export default function Button({ color, size, children, onClick }) {
+export default function Button({ color, size, children, onClick, type }) {
   let colorClasses = colors[color];
   let sizeClasses = sizes[size];
 
   return (
     <button
-      type="button"
+      type={type}
       onClick={onClick}
       className={`font-bold ${sizeClasses} ${colorClasses}`}
     >

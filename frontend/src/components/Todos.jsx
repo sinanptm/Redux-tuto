@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useAddTodoMutation, useRemoveTodoMutation, useEditTodoMutation, useGetTodosQuery } from "../slices/apiSlice";
 import { addTodo, editTodo, removeTodo } from "../slices/todoSlice";
 import AddTodo from "../components/todo/AddTodo";
@@ -15,15 +15,15 @@ const Todos = () => {
   const [removeTodoMutation] = useRemoveTodoMutation();
   const [editTodoMutation] = useEditTodoMutation();
   const [editModel, setEditModel] = useState({ show: false, id: "" });
-  const [todos,setTodos] = useState([])
+  const [todos, setTodos] = useState([]);
+  const theme = useSelector(state => state.theme.theme);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         await refetch();
-        if( data!==undefined){
-          setTodos(data.todos)
-          console.log(data.todos);
+        if (data !== undefined) {
+          setTodos(data.todos);
         }
       } catch (error) {
         console.error("Error fetching todos:", error);
@@ -31,7 +31,7 @@ const Todos = () => {
     };
 
     fetchData();
-  }, [refetch,data]);
+  }, [refetch, data]);
 
   const handleAddTodo = async (text) => {
     try {
@@ -46,7 +46,7 @@ const Todos = () => {
   const handleRemoveTodo = async (id) => {
     try {
       await removeTodoMutation(id);
-      dispatch(removeTodo({ id }));      await refetch();
+      dispatch(removeTodo({ id }));
       await refetch();
     } catch (err) {
       console.error("Failed to remove todo:", err);
@@ -63,30 +63,39 @@ const Todos = () => {
     }
   };
 
+  const themeStyles = {
+    container: theme === 'dark' ? 'bg-black text-gold' : 'bg-white text-black',
+    title: theme === 'dark' ? 'text-gold' : 'text-black',
+    todoText: theme === 'dark' ? 'text-gold' : 'text-black',
+    divider: theme === 'dark' ? 'divide-gray-700' : 'divide-gray-300',
+    error: theme === 'dark' ? 'text-red-500' : 'text-red-700',
+    emptyText: theme === 'dark' ? 'text-text-muted' : 'text-gray-500',
+  };
+
   return (
-    <div className="container mx-auto px-4 py-10">
+    <div className={`container mx-auto px-9 py-10 h-screen ${themeStyles.container}`}>
       <div className="flex justify-center">
-        <h2 className="text-2xl font-bold">Todo List</h2>
+        <h2 className={`text-2xl font-bold ${themeStyles.title}`}>Todo List</h2>
       </div>
-      <AddTodo onAddTodo={handleAddTodo} />
-      {isLoading&&<Spinner />}
-      {error&&<p className="text-red-500">{error.message}</p>}
-      {editModel.show && <EditModel id={editModel.id} todos={todos} editTodo={handleEditTodo} setEditModel={setEditModel} />}
+      <AddTodo onAddTodo={handleAddTodo} theme={theme} />
+      {isLoading && <Spinner />}
+      {error && <p className={themeStyles.error}>{error.message}</p>}
+      {editModel.show && <EditModel id={editModel.id} todos={todos} editTodo={handleEditTodo} setEditModel={setEditModel} theme={theme} />}
       <div className="mt-8">
         {todos.length > 0 ? (
-          <ul className="divide-y divide-gray-200">
+          <ul className={`divide-y ${themeStyles.divider}`}>
             {todos.map((todo, i) => (
               <li key={todo.id || i} className="flex items-center justify-between py-4">
-                <span className="text-gray-800">{todo.text}</span>
+                <span className={themeStyles.todoText}>{todo.text}</span>
                 <div className="flex space-x-4">
-                  <EditTodo onEditTodo={() => setEditModel({ show: true, id: todo.id })} />
-                  <RemoveTodo id={todo.id} onRemoveTodo={handleRemoveTodo} />
+                  <EditTodo onEditTodo={() => setEditModel({ show: true, id: todo.id })} theme={theme} />
+                  <RemoveTodo id={todo.id} onRemoveTodo={handleRemoveTodo} theme={theme} />
                 </div>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-gray-500">No todos yet.</p>
+          <p className={themeStyles.emptyText}>No todos yet.</p>
         )}
       </div>
     </div>
